@@ -1,0 +1,30 @@
+name: 'fix-whitespace-action'
+description: 'Run fix-whitespace  on your repo'
+author: 'Andreas Abel'
+inputs:
+  version:
+    required: true
+    description: 'fix-whitespace version'
+    default: '0.0.10'
+runs:
+  using: 'composite'
+  defaults:
+    run:
+      shell: bash
+  steps:
+
+    - name: "Install fix-whitespace (macOS)"
+      if: runner.os == 'macOS'
+      run: |
+        export SRC="fix-whitespace-${{ inputs.version }}-mac.binary"
+        export DIR="$HOME/.local/bin"
+        wget "https://github.com/agda/fix-whitespace/releases/download/v${{ inputs.version }}/${SRC}"
+        chmod +x "${SRC}"
+        mkdir -p "${DIR}"
+        mv "${SRC}" "${DIR}/fix-whitespace"
+        echo "${DIR}" >> "${GITHUB_PATH}"
+
+
+    - name: "Run fix-whitespace at the root"
+      run: |
+        fix-whitespace --check

@@ -1,0 +1,21 @@
+name: Check whitespace
+on:
+  push:
+    branches:
+      - master
+      - ci*
+  pull_request:
+    branches:
+      - master
+      - ci*
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: macOS-11
+
+  steps:
+  - uses: actions/checkout@v3
+  - uses: andreasabel/fix-whitespace-action
+    with:
+      version: 0.0.10
