@@ -6,15 +6,14 @@ inputs:
     required: true
     description: 'fix-whitespace version'
     default: '0.0.10'
+
 runs:
   using: 'composite'
-  defaults:
-    run:
-      shell: bash
   steps:
 
     - name: "Install fix-whitespace (macOS)"
       if: runner.os == 'macOS'
+      shell: bash
       run: |
         export SRC="fix-whitespace-${{ inputs.version }}-mac.binary"
         export DIR="$HOME/.local/bin"
@@ -26,5 +25,6 @@ runs:
 
 
     - name: "Run fix-whitespace at the root"
+      shell: bash
       run: |
         fix-whitespace --check
