@@ -3,9 +3,20 @@ description: 'Run fix-whitespace  on your repo'
 author: 'Andreas Abel'
 inputs:
   version:
+    description: 'Version of fix-whitespace program'
     required: true
-    description: 'fix-whitespace version'
     default: '0.0.10'
+  configfile:
+    description: 'Name of fix-whitespace configuration file'
+    required: true
+    default: 'fix-whitespace.yaml'
+  fix:
+    description: 'Fix whitespace violations?'
+    required: true
+    default: false
+  # allow-tabs:
+  #   description: 'Allow tabs or convert to given column spacing, if'
+  #   required: false
 
 runs:
   using: 'composite'
@@ -32,8 +43,10 @@ runs:
         mv "${SRC}" "${DIR}/fix-whitespace"
         echo "${DIR}" >> "${GITHUB_PATH}"
 
-
     - name: "Run fix-whitespace at the root"
       shell: bash
       run: |
-        fix-whitespace --check
+        if [[ ${{ inputs.fix }} != "true" ]]; then
+          MODE="--check"
+        endif
+        fix-whitespace --config=${{ inputs. configfile}} ${MODE}
