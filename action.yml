@@ -11,13 +11,22 @@ runs:
   using: 'composite'
   steps:
 
-    - name: "Install fix-whitespace (macOS)"
-      if: runner.os == 'macOS'
+    - name: "Install fix-whitespace"
       shell: bash
       run: |
-        export SRC="fix-whitespace-${{ inputs.version }}-mac.binary"
-        export DIR="$HOME/.local/bin"
+        # Download binary
+        if   [[ ${{ runner.os }} == "Linux"   ]]; then
+          EXT="-linux.binary"
+        elif [[ ${{ runner.os }} == "macOS"   ]]; then
+          EXT="-mac.binary"
+        elif [[ ${{ runner.os }} == "Windows" ]]; then
+          EXT=".exe"
+        endif
+        SRC="fix-whitespace-${{ inputs.version }}${EXT}"
         wget "https://github.com/agda/fix-whitespace/releases/download/v${{ inputs.version }}/${SRC}"
+
+        # Put binary as fix-whitespace to ~/.local/bin and put that into the PATH.
+        DIR="$HOME/.local/bin"
         chmod +x "${SRC}"
         mkdir -p "${DIR}"
         mv "${SRC}" "${DIR}/fix-whitespace"
