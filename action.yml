@@ -32,7 +32,7 @@ runs:
           EXT="-mac.binary"
         elif [[ ${{ runner.os }} == "Windows" ]]; then
           EXT=".exe"
-        endif
+        fi
         SRC="fix-whitespace-${{ inputs.version }}${EXT}"
         wget "https://github.com/agda/fix-whitespace/releases/download/v${{ inputs.version }}/${SRC}"
 
