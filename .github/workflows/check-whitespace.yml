@@ -12,7 +12,11 @@ on:
 
 jobs:
   check:
-    runs-on: macOS-11
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+      fail-fast: false
 
     steps:
     - uses: actions/checkout@v3
