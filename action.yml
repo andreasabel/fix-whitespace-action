@@ -34,7 +34,7 @@ runs:
           EXT=".exe"
         fi
         SRC="fix-whitespace-${{ inputs.version }}${EXT}"
-        wget "https://github.com/agda/fix-whitespace/releases/download/v${{ inputs.version }}/${SRC}"
+        curl "https://github.com/agda/fix-whitespace/releases/download/v${{ inputs.version }}/${SRC}" --output "${SRC}"
 
         # Put binary as fix-whitespace to ~/.local/bin and put that into the PATH.
         DIR="$HOME/.local/bin"
