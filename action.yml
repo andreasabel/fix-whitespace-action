@@ -26,11 +26,11 @@ runs:
       shell: bash
       run: |
         # Download binary
-        if   [[ ${{ runner.os }} == "Linux"   ]]; then
+        if   [[ "${{ runner.os }}" == "Linux"   ]]; then
           EXT="-linux.binary"
-        elif [[ ${{ runner.os }} == "macOS"   ]]; then
+        elif [[ "${{ runner.os }}" == "macOS"   ]]; then
           EXT="-mac.binary"
-        elif [[ ${{ runner.os }} == "Windows" ]]; then
+        elif [[ "${{ runner.os }}" == "Windows" ]]; then
           EXT=".exe"
         fi
         SRC="fix-whitespace-${{ inputs.version }}${EXT}"
@@ -46,7 +46,7 @@ runs:
     - name: "Run fix-whitespace at the root"
       shell: bash
       run: |
-        if [[ ${{ inputs.fix }} != "true" ]]; then
+        if [[ "${{ inputs.fix }}" != "true" ]]; then
           MODE="--check"
-        endif
+        fi
         fix-whitespace --config=${{ inputs. configfile}} ${MODE}
