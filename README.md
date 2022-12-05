@@ -19,7 +19,7 @@ steps:
   - uses: actions/checkout@v3
   - uses: andreasabel/fix-whitespace-action@v1
     with:
-      version:    0.0.10
+      version:    0.0.11
       configfile: fix-whitespace.yaml
       fix:        true
 
