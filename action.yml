@@ -18,11 +18,37 @@ inputs:
   #   description: 'Allow tabs or convert to given column spacing, if'
   #   required: false
 
+# env does not seem to work here in composite actions
+# # For the sake of caching, have our private directory on the PATH
+# env:
+#   EXEDIR: "$HOME/.local/fix-whitespace/bin"
+
 runs:
   using: 'composite'
   steps:
 
+    - name: "Put fix-whitespace installation directory onto PATH"
+      shell: bash
+      run: |
+        export EXEDIR="$HOME/.local/fix-whitespace/bin"
+        mkdir -p "${EXEDIR}"
+        echo "${EXEDIR}" >> "${GITHUB_PATH}"
+        echo "EXEDIR=${EXEDIR}" >> "${GITHUB_ENV}"
+
+    # It is a bit silly to cache the fix-whitespace executable,
+    # because it should not matter whether where we download it from
+    # (cache or release).
+    # However, GitHub may have its way of accounting e.g., accesses
+    # to a release directory and might limit access (see issue #1).
+    - name: "Cache the fix-whitespace executable"
+      uses: actions/cache@v3
+      id:   cache-fix-whitespace
+      with:
+        path: "${{ env.EXEDIR }}"
+        key:  ${{ runner.os }}-fix-whitespace-${{ inputs.version }}
+
     - name: "Install fix-whitespace"
+      if: ${{ !steps.cache-fix-whitespace.outputs.cache-hit }}
       shell: bash
       run: |
         # Download binary
@@ -34,14 +60,18 @@ runs:
           EXT=".exe"
         fi
         SRC="fix-whitespace-${{ inputs.version }}${EXT}"
-        curl -OL "https://github.com/agda/fix-whitespace/releases/download/v${{ inputs.version }}/${SRC}"
-
-        # Put binary as fix-whitespace to ~/.local/bin and put that into the PATH.
-        DIR="$HOME/.local/bin"
-        chmod +x "${SRC}"
-        mkdir -p "${DIR}"
-        mv "${SRC}" "${DIR}/fix-whitespace"
-        echo "${DIR}" >> "${GITHUB_PATH}"
+        TGT="${{ env.EXEDIR }}/fix-whitespace"
+        http_code=$(curl -w '%{http_code}\n' -L "https://github.com/agda/fix-whitespace/releases/download/v${{ inputs.version }}/${SRC}" -o "${TGT}")
+        exit_code=$?
+        echo "curl exit code: ${exit_code}"
+        echo "curl http code: ${http_code}"
+        ls -l "${TGT}"
+        if [[ "${exit_code}" == "0" && "${http_code}" == "200" ]]; then
+          chmod +x "${TGT}"
+        else
+          echo "Download of fix-whitespace binary failed."
+          exit 1
+        fi
 
     - name: "Run fix-whitespace at the root"
       shell: bash
@@ -49,4 +79,4 @@ runs:
         if [[ "${{ inputs.fix }}" != "true" ]]; then
           MODE="--check"
         fi
-        fix-whitespace --config=${{ inputs. configfile}} ${MODE}
+        fix-whitespace --config=${{ inputs.configfile }} ${MODE}
