@@ -19,9 +19,10 @@ steps:
   - uses: actions/checkout@v3
   - uses: andreasabel/fix-whitespace-action@v1
     with:
-      version:    0.0.11
+      version:    0.1
       configfile: fix-whitespace.yaml
       fix:        true
+      verbose:    true
 
 ```
 Setting `fix: true` fixes whitespace violations in place.
@@ -31,3 +32,5 @@ You may be able to push these fixes pack to your repository, e.g., by opening a 
 Input `version` refers to the [version of the `fix-whitespace` program](https://github.com/agda/fix-whitespace/releases).
 
 With input `configfile` one can specify the configuration file (defaults to `fix-whitespace.yaml`).
+
+Exact position of violations can be displayed with `verbose: true`.

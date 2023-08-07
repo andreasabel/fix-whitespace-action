@@ -5,13 +5,17 @@ inputs:
   version:
     description: 'Version of fix-whitespace program'
     required: true
-    default: '0.0.11'
+    default: '0.1'
   configfile:
     description: 'Name of fix-whitespace configuration file'
     required: true
     default: 'fix-whitespace.yaml'
   fix:
     description: 'Fix whitespace violations?'
+    required: true
+    default: false
+  verbose:
+    description: 'Report violation locations?'
     required: true
     default: false
   # allow-tabs:
@@ -79,4 +83,7 @@ runs:
         if [[ "${{ inputs.fix }}" != "true" ]]; then
           MODE="--check"
         fi
-        fix-whitespace --config=${{ inputs.configfile }} ${MODE}
+        if [[ "${{ inputs.verbose }}" == "true" ]]; then
+          VERBOSE="--verbose"
+        fi
+        fix-whitespace --config=${{ inputs.configfile }} ${MODE} ${VERBOSE}
