@@ -45,7 +45,7 @@ runs:
     # However, GitHub may have its way of accounting e.g., accesses
     # to a release directory and might limit access (see issue #1).
     - name: "Cache the fix-whitespace executable"
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       id:   cache-fix-whitespace
       with:
         path: "${{ env.EXEDIR }}"
