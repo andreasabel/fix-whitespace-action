@@ -52,7 +52,7 @@ runs:
         key:  ${{ runner.os }}-fix-whitespace-${{ inputs.version }}
 
     - name: "Install fix-whitespace"
-      if: ${{ !steps.cache-fix-whitespace.outputs.cache-hit }}
+      if: steps.cache-fix-whitespace.outputs.cache-hit != 'true'
       shell: bash
       run: |
         # Download binary
